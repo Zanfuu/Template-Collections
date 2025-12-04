@@ -1,14 +1,18 @@
 services:
-  db:
-    image: postgres:15-alpine
-    restart: always 
+  wordpress:
+    image: wordpress:latest
+    container_name: wordpress_app
+    restart: always
+    volumes:
+      - ./wp_content:/var/www/html/wp-content
     # ============================================
     # OPSI 1: Environment langsung di docker-compose (AKTIF)
     # ============================================
     environment:
-      POSTGRES_PASSWORD: db_password
-      POSTGRES_USER: postgres
-      POSTGRES_DB: postgres
+      WORDPRESS_DB_HOST: db:3306
+      WORDPRESS_DB_NAME: 'wordpress_db'
+      WORDPRESS_DB_USER: 'wp_user'
+      WORDPRESS_DB_PASSWORD: 'wp_password'
     
     # ============================================
     # OPSI 2: Environment dari file .env terpisah
@@ -16,15 +20,10 @@ services:
     # env_file:
     #   - .env
     ports:
-      - "5432:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - "8080:80" 
     networks:
       - nginx-proxy-manager_default
 
-volumes:
-  postgres_data:
-  
 networks:
   nginx-proxy-manager_default:
     external: true

@@ -1,0 +1,52 @@
+services:
+  db:
+    image: mariadb:latest
+    container_name: wordpress-db
+    restart: always
+    volumes:
+      - ./db_data:/var/lib/mysql
+    # ============================================
+    # OPSI 1: Environment langsung di docker-compose (AKTIF)
+    # ============================================
+    environment:
+      MYSQL_ROOT_PASSWORD: 'root_password_yang_kuat'
+      MYSQL_DATABASE: 'wordpress_db'
+      MYSQL_USER: 'wp_user'
+      MYSQL_PASSWORD: 'wp_password'
+    
+    # ============================================
+    # OPSI 2: Environment dari file .env terpisah
+    # ============================================
+    # env_file:
+    #   - .env
+    networks:
+      - nginx-proxy-manager_default
+
+  wordpress:
+    image: wordpress:latest
+    container_name: wordpress_app
+    restart: always
+    volumes:
+      - ./wp_content:/var/www/html/wp-content
+    # ============================================
+    # OPSI 1: Environment langsung di docker-compose (AKTIF)
+    # ============================================
+    environment:
+      WORDPRESS_DB_HOST: db:3306
+      WORDPRESS_DB_NAME: 'wordpress_db'
+      WORDPRESS_DB_USER: 'wp_user'
+      WORDPRESS_DB_PASSWORD: 'wp_password'
+    
+    # ============================================
+    # OPSI 2: Environment dari file .env terpisah
+    # ============================================
+    # env_file:
+    #   - .env
+    ports:
+      - "8080:80" 
+    networks:
+      - nginx-proxy-manager_default
+
+networks:
+  nginx-proxy-manager_default:
+    external: true
