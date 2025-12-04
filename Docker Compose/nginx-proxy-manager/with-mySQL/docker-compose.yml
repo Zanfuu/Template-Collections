@@ -1,0 +1,38 @@
+services:
+  app:
+    image: 'jc21/nginx-proxy-manager:latest'
+    restart: unless-stopped
+    ports:
+      - '80:80'
+      - '443:443'
+      - '81:81'
+    environment:
+      DB_MYSQL_HOST: "db"
+      DB_MYSQL_PORT: 3306
+      DB_MYSQL_USER: "npm_user"
+      DB_MYSQL_PASSWORD: "npm_password"
+      DB_MYSQL_NAME: "npm_db"
+    volumes:
+      - ./data:/data
+      - ./letsencrypt:/etc/letsencrypt
+    depends_on:
+      - db
+    networks:
+      - default
+
+  db:
+    image: 'mariadb:latest'
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: "root_password_npm_kuat"
+      MYSQL_DATABASE: "npm_db"
+      MYSQL_USER: "npm_user"
+      MYSQL_PASSWORD: "npm_password"
+    volumes:
+      - ./data/mysql:/var/lib/mysql
+    networks:
+      - default
+
+networks:
+  default:
+    external: false

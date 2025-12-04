@@ -1,0 +1,19 @@
+services:
+  db:
+    image: postgres:15-alpine
+    restart: always 
+    environment:
+      POSTGRES_PASSWORD: secret@123
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - nginx-proxy-manager_default
+
+volumes:
+  postgres_data:
+  
+networks:
+  nginx-proxy-manager_default:
+    external: true

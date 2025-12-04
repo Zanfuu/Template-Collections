@@ -1,0 +1,17 @@
+services:
+  redis:
+    image: redis:7-alpine
+    restart: always 
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - nginx-proxy-manager_default 
+
+volumes:
+  redis_data:
+  
+networks:
+  nginx-proxy-manager_default:
+    external: true
