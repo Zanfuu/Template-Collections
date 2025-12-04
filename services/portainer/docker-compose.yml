@@ -1,0 +1,41 @@
+services:
+  portainer:
+    container_name: portainer
+    image: portainer/portainer-ce:lts
+    restart: always
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+    ports:
+      - "9443:9443"
+      - "8000:8000"
+    # ============================================
+    # OPSI 1: Menggunakan network eksternal (AKTIF)
+    # Berguna jika ingin terintegrasi dengan reverse proxy seperti Nginx Proxy Manager
+    # ============================================
+    networks:
+      - nginx-proxy-manager_default
+    
+    # ============================================
+    # OPSI 2: Menggunakan network default (Standalone)
+    # Untuk Portainer standalone tanpa reverse proxy
+    # ============================================
+    # networks:
+    #   - default
+
+volumes:
+  portainer_data:
+    name: portainer_data
+
+# ============================================
+# Network Configuration
+# ============================================
+# OPSI 1: Network eksternal (AKTIF)
+networks:
+  nginx-proxy-manager_default:
+    external: true
+
+# OPSI 2: Network default (uncomment jika pakai opsi 2)
+# networks:
+#   default:
+#     external: false

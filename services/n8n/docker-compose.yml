@@ -1,0 +1,47 @@
+n8n:
+    image: n8n.io/n8n
+    container_name: n8n
+    restart: always
+    ports:
+      - "5678:5678" 
+    volumes:
+      - n8n_data:/home/node/.n8n
+    environment:
+      # ============================================
+      # OPSI 1: Environment langsung di docker-compose (AKTIF)
+      # ============================================
+      # Contoh jika menggunakan postgresdb sebagai database
+      DB_TYPE: postgresdb
+      DB_POSTGRESDB_HOST: postgres
+      DB_POSTGRESDB_DATABASE: n8n_db
+      DB_POSTGRESDB_USER: n8n_user
+      DB_POSTGRESDB_PASSWORD: db_password
+      # Contoh jika menggunakan mysql sebagai database
+      # DB_TYPE: mysql
+      # DB_MYSQL_HOST: mysql
+      # DB_MYSQL_DATABASE: n8n_db
+      # DB_MYSQL_USER: n8n_user
+      # DB_MYSQL_PASSWORD: db_password
+      N8N_HOST: n8n
+      N8N_PORT: 5678
+      N8N_PROTOCOL: http
+      N8N_BASIC_AUTH_ACTIVE: 'true'
+      N8N_BASIC_AUTH_USER: n8nadmin
+      N8N_BASIC_AUTH_PASSWORD: user_password
+
+    # ============================================
+    # OPSI 2: Environment dari file .env terpisah
+    # ============================================
+    # env_file:
+    #   - .env
+    networks:
+      - nginx-proxy-manager_default
+    depends_on:
+      - postgres
+
+networks:
+  nginx-proxy-manager_default:
+    external: true
+
+volumes:
+  n8n_data:
